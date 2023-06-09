@@ -51,7 +51,7 @@ class ModalFieldController extends ModalController {
         if (this.treeOptions.show) {
           const fqname = this.showFullyQualifiedName(this.modalData.resource_action) || null;
           this.treeOptions.loadWorkflows().then((data) => {
-            this.treeOptions.data = data.resources;
+            this.treeOptions.data = data.resources.filter((item: any) => item.payload);
             this.treeOptions.selected = {fqname: '/' + fqname};
           });
         }
