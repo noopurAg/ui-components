@@ -114,18 +114,18 @@
 <div ng-if="vm.modalTabIsSet('options') && vm.modalData.dynamic">
   <form class="form-horizontal">
     <div ng-show="!vm.treeOptions.show">
-      <div pf-form-group pf-label="Automation Type">
+      <div pf-form-group pf-label="Automation Type" class="entry_point_selector_types">
           <select class="form-control" miq-select ng-model="vm.embedded_type"  >
             <option value="automate" translate>Embedded Automate</option>
             <option value="workflows" translate>Embedded Workflows</option>  
           </select>
-        <div class="input-group" ng-if="vm.embedded_type=='automate'">
+        <div class="input-group entry_point" ng-if="vm.embedded_type=='automate'">
           <input type="text" class="form-control" ng-value="vm.showFullyQualifiedName(vm.modalData.resource_action)" disabled>
           <span class="input-group-btn">
             <button class="btn btn-default" ng-click="vm.treeOptions.toggle();"><i class="ff ff-load-balancer"></i></button>
           </span>
         </div>
-        <div class="input-group" ng-if="vm.embedded_type=='workflows'">
+        <div class="input-group entry_point" ng-if="vm.embedded_type=='workflows'">
           <input type="text" class="form-control" disabled>
           <span class="input-group-btn">
             <button class="btn btn-default" ng-click="vm.treeOptions.toggleWorkflows();"><i class="ff ff-load-balancer"></i></button>
