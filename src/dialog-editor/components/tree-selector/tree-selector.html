@@ -1,10 +1,10 @@
 <div class="tree_selector_wrapper">
   <div class="tree_selector_title_wrapper">
     <div class="tree_selector_dialog_title">
-      <span ng-if="$ctrl.treeOptions.automationType=='automate'">
+      <span ng-if="$ctrl.treeOptions.automationType==$ctrl.treeOptions.automationTypes.automate">
         Select Embededded Automate
       </span>
-      <span ng-if="$ctrl.treeOptions.automationType=='workflows'">
+      <span ng-if="$ctrl.treeOptions.automationType==$ctrl.treeOptions.automationTypes.workflows">
         Select Embededded Workflow
       </span>
     </div>
@@ -18,7 +18,7 @@
   </div>
   <div class="tree_selector_content_wrapper">
     <div ng-if="!$ctrl.treeOptions.data" class="spinner spinner-lg"></div>
-    <div ng-if="$ctrl.treeOptions.automationType=='automate'">
+    <div ng-if="$ctrl.treeOptions.automationType==$ctrl.treeOptions.automationTypes.automate">
       <div ng-if="$ctrl.treeOptions.data">
         <miq-tree-selector
           name="tree-selector"
@@ -40,10 +40,10 @@
         </div>
       </div>
     </div>
-    <div ng-if="$ctrl.treeOptions.automationType=='workflows'">
+    <div ng-if="$ctrl.treeOptions.automationType==$ctrl.treeOptions.automationTypes.workflows">
       <div ng-if="$ctrl.treeOptions.data">
-        <ul class="nav nav-list workflows" ng-repeat="workflow in $ctrl.treeOptions.data">
-          <li class="workflow_item">
+        <ul class="nav nav-list workflows_list_wrapper" ng-repeat="workflow in $ctrl.treeOptions.data">
+          <li class="workflow_item" ng-click="$ctrl.treeOptions.onSelect(workflow)">
               {{workflow.name}}
           </li>
         </ul>
