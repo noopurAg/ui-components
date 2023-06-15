@@ -187,5 +187,21 @@ l.nav.nav-list.workflows {
     display: flex;
     flex-direction: column;
     padding: 10px;
+
+    ul.workflows_list_wrapper {
+      display: flex;
+
+      li.workflow_item {
+        display: flex;
+        flex-grow: 1;
+        padding: 5px;
+
+        &:hover {
+          background: #e4e5e6;
+          cursor: pointer;
+        }
+        
+      }
+    }
   }
 }
