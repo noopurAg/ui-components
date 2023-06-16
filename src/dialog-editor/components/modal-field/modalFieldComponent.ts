@@ -37,7 +37,6 @@ class ModalFieldController extends ModalController {
       /** Function to reset the automation entries when the Automation Type drop down is changed. */
       resetAutomationEntries: () => {
         if (this.modalData.resource_action) {
-          console.log('inside resetAutomationEntries resource_action=', this.modalData.resource_action);
           const actionKeys = ['ae_namespace', 'ae_class', 'ae_instance', 'ae_id'];
           actionKeys.forEach((item) => {
             if (Object.keys(this.modalData.resource_action).includes(item)) {
@@ -52,7 +51,7 @@ class ModalFieldController extends ModalController {
 
       /** Function to reset the modalData while changin the Automation Type. */
       onAutomationTypeChange: () => {
-        this.treeOptions.automationType = this.modalData.automationType;
+        this.treeOptions.automationType = this.modalData.automation_type;
         this.treeOptions.resetAutomationEntries();
         console.log(this.modalData);
       },
