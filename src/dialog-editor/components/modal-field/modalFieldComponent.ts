@@ -36,18 +36,23 @@ class ModalFieldController extends ModalController {
 
       /** Function to reset the automation entries when the Automation Type drop down is changed. */
       resetAutomationEntries: () => {
-        return {
-          ...this.modalData.resource_action,
-          ae_instance: '',
-          ae_class: '',
-          ae_namespace: '',
-          ae_id: '',
-        };
+        if (this.modalData.resource_action) {
+          console.log('inside resetAutomationEntries resource_action=', this.modalData.resource_action);
+          const actionKeys = ['ae_namespace', 'ae_class', 'ae_instance', 'ae_id'];
+          actionKeys.forEach((item) => {
+            if (Object.keys(this.modalData.resource_action).includes(item)) {
+              this.modalData.resource_action =  {
+                ...this.modalData.resource_action,
+                [item]: '',
+              };
+            }
+          });
+        }
       },
 
       /** Function to reset the modalData while changin the Automation Type. */
       onAutomationTypeChange: () => {
-        console.log(this.treeOptions.automationType);
+        this.treeOptions.automationType = this.modalData.automationType;
         this.treeOptions.resetAutomationEntries();
         console.log(this.modalData);
       },
@@ -58,8 +63,6 @@ class ModalFieldController extends ModalController {
         this.treeOptions.automationType = this.treeOptions.automationTypes.automate;
 
         if (this.treeOptions.show) {
-          this.modalData.resource_action = this.treeOptions.resetAutomationEntries();
-          console.log(this.modalData);
           const fqname = this.showFullyQualifiedName(this.modalData.resource_action) || null;
           this.treeOptions.load(fqname).then((data) => {
             this.treeOptions.data = data;
@@ -74,7 +77,6 @@ class ModalFieldController extends ModalController {
         this.treeOptions.automationType = this.treeOptions.automationTypes.workflows;
 
         if (this.treeOptions.show) {
-          this.modalData.resource_action = this.treeOptions.resetAutomationEntries();
           const fqname = this.showFullyQualifiedName(this.modalData.resource_action) || null;
           this.treeOptions.loadWorkflows().then((data) => {
             this.treeOptions.data = data.resources.filter((item: any) => item.payload);
@@ -91,7 +93,13 @@ class ModalFieldController extends ModalController {
   }
 
   public showFullyQualifiedName(resourceAction) {
-    if (resourceAction.ae_namespace && resourceAction.ae_class && resourceAction.ae_instance) {
+    if (!resourceAction) {
+      return '';
+    }
+    const actionKeys = ['ae_namespace', 'ae_class', 'ae_instance'];
+    const keysPresent = actionKeys.every((item) => Object.keys(resourceAction).includes(item));
+
+    if (keysPresent && resourceAction.ae_namespace && resourceAction.ae_class && resourceAction.ae_instance) {
       return `${resourceAction.ae_namespace}/${resourceAction.ae_class}/${resourceAction.ae_instance}`;
     } else {
       return '';
@@ -105,25 +113,28 @@ class ModalFieldController extends ModalController {
     if (this.treeOptions.includeDomain === false) {
       fqname.splice(1, 1);
     }
-
-    elementData.resource_action = {
-      ...elementData.resource_action,
-      ae_instance: fqname.pop(),
-      ae_class: fqname.pop(),
-      ae_namespace: fqname.filter(String).join('/'),
-      ae_id: node.key,
-    };
+    if (elementData.resource_action) {
+      elementData.resource_action = {
+        ...elementData.resource_action,
+        ae_instance: fqname.pop(),
+        ae_class: fqname.pop(),
+        ae_namespace: fqname.filter(String).join('/'),
+        ae_id: node.key,
+      };
+    }
   }
 
   /** Function to extract the values needed for embedded_workflows during onclick event of an item from the list */
   public onEmbeddedWorkflowsSelect(workflow, elementData) {
-    elementData.resource_action = {
-      ...elementData.resource_action,
-      ae_instance: workflow.name,
-      ae_class: 'workflows', // TODO: Not sure what to give here
-      ae_namespace: 'configuration_script_payload', // TODO: Not sure what to give here
-      ae_id: workflow.id,
-    };
+    if (elementData.resource_action) {
+      elementData.resource_action = {
+        ...elementData.resource_action,
+        ae_instance: workflow.name,
+        ae_class: 'workflows', // TODO: Not sure what to give here or is this required
+        ae_namespace: 'configuration_script_payload', // TODO: Not sure what to give here or is this required
+        ae_id: workflow.id,
+      };
+    }
   }
 
   /** Function to extract the values needed for entry points during onclick event of an item from the tree or list */
