@@ -36,24 +36,22 @@ class ModalFieldController extends ModalController {
 
       /** Function to reset the automation entries when the Automation Type drop down is changed. */
       resetAutomationEntries: () => {
+        const resetFields = {
+          automate: ['ae_namespace', 'ae_class', 'ae_instance'],
+          workflows: ['configuration_script_id'],
+        };
+
         if (this.modalData.resource_action) {
-          console.log('selected option = ', this.modalData.automation_type);
-          const resetFields = {
-            automate: ['ae_namespace', 'ae_class', 'ae_instance'],
-            workflows: ['ae_instance', 'configuration_script_id'],
-          };
-          console.log(resetFields);
-          const resetKeys = this.modalData.automation_type === this.treeOptions.automationTypes.automate
-            ? resetFields.automate
-            : resetFields.workflows;
-          resetKeys.forEach((item) => {
-            if (Object.keys(this.modalData.resource_action).includes(item)) {
-              this.modalData.resource_action =  {
+          const entries =  (this.modalData.automation_type === this.treeOptions.automationTypes.automate) ? resetFields.workflows : resetFields.automate;
+          entries.forEach((field) => {
+            if (Object.keys(this.modalData.resource_action).includes(field)) {
+              this.modalData.resource_action = {
                 ...this.modalData.resource_action,
-                [item]: '',
+                [field]: '',
               };
             }
           });
+
           console.log('modifled resource_action', this.modalData.resource_action);
         }
       },
@@ -61,7 +59,7 @@ class ModalFieldController extends ModalController {
       /** Function to reset the modalData while changin the Automation Type. */
       onAutomationTypeChange: () => {
         this.treeOptions.automationType = this.modalData.automation_type;
-        // this.treeOptions.resetAutomationEntries();
+        this.treeOptions.resetAutomationEntries();
         console.log(this.modalData);
       },
 
@@ -85,10 +83,10 @@ class ModalFieldController extends ModalController {
         this.treeOptions.automationType = this.treeOptions.automationTypes.workflows;
 
         if (this.treeOptions.show) {
-          const fqname = this.showFullyQualifiedName(this.modalData.resource_action) || null;
           this.treeOptions.loadWorkflows().then((data) => {
             this.treeOptions.data = data.resources.filter((item: any) => item.payload);
-            this.treeOptions.selected = {fqname: '/' + fqname};
+            const workflow = this.treeOptions.data.find((item) => item.id === this.modalData.resource_action.configuration_script_id);
+            this.treeOptions.selected = workflow ? workflow.name : null;
           });
         }
       },
@@ -137,6 +135,8 @@ class ModalFieldController extends ModalController {
       elementData.resource_action = {
         ...elementData.resource_action,
         ae_instance: workflow.name,
+        ae_class: 'configuration_script',
+        ae_namespace: 'workflows',
         configuration_script_id: workflow.id,
       };
     }
@@ -150,6 +150,7 @@ class ModalFieldController extends ModalController {
       this.onEmbeddedWorkflowsSelect(node, elementData);
     }
     this.treeOptions.show = false;
+    console.log(this.modalData.resource_action);
   }
 
   public modalFieldIsValid() {

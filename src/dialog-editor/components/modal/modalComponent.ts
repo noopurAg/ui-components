@@ -33,6 +33,7 @@ class ModalController {
         box: this.loadModalBoxData(elem.tabId, elem.boxId),
         field: this.loadModalFieldData(elem.tabId, elem.boxId, elem.fieldId)
       };
+      console.log('elements.field=', elements.field);
       this.modalData = elem.type in elements &&
         _.cloneDeep(elements[elem.type]);
 
@@ -88,7 +89,13 @@ class ModalController {
       let tabList = this.DialogEditor.getDialogTabs();
       let boxList = tabList[tab];
       let fieldList = boxList.dialog_groups[box];
-      return fieldList.dialog_fields[field];
+      let modalFieldData = fieldList.dialog_fields[field];
+      if (modalFieldData.resource_action && modalFieldData.resource_action.configuration_script_id) {
+        modalFieldData.automation_type = 'embedded_workflows';
+      } else {
+        modalFieldData.automation_type = 'embedded_automate';
+      }
+      return modalFieldData;
     }
   }
 
