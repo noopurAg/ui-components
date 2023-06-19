@@ -127,11 +127,11 @@
         </div>
         <div class="input-group entry_point" ng-if="vm.modalData.automation_type == vm.treeOptions.automationTypes.workflows">
           <input type="text" class="form-control" ng-value="vm.modalData.resource_action.ae_instance" disabled>
+          <input type="hidden" class="form-control" ng-value="vm.modalData.resource_action.configuration_script_id" disabled>
           <span class="input-group-btn">
             <button class="btn btn-default" ng-click="vm.treeOptions.toggleWorkflows();"><i class="ff ff-load-balancer"></i></button>
           </span>
         </div>
-        <input type="hidden" class="form-control" ng-value="vm.modalData.resource_action.ae_id" disabled>
         </div>
       <dialog-editor-modal-field-template template="dynamic-values.html"
                                           modal-data="vm.modalData">

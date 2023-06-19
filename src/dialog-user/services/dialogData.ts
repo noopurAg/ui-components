@@ -33,6 +33,7 @@ export default class DialogDataService {
     options,
     values,
   }) {
+    console.log('values=', values);
     let dropDownValues = values.map((option) => {
       const value = this.convertDropdownValue(option[0], data_type);
       const description = (!Number.isInteger(option[1]) ? option[1] : parseInt(option[1], 10));
@@ -46,7 +47,7 @@ export default class DialogDataService {
         values: dropDownValues,
       });
     }
-
+    console.log('dropDownValues=', dropDownValues);
     return dropDownValues;
   }
 

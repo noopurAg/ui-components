@@ -178,6 +178,7 @@ class ModalController {
         );
         break;
       case 'field':
+        delete this.modalData['automation_type'];
         this.DialogEditor.getDialogTabs()[
           this.DialogEditor.activeTab].dialog_groups[
             this.elementInfo.boxId].dialog_fields[

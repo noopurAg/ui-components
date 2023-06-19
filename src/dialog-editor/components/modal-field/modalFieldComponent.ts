@@ -37,8 +37,16 @@ class ModalFieldController extends ModalController {
       /** Function to reset the automation entries when the Automation Type drop down is changed. */
       resetAutomationEntries: () => {
         if (this.modalData.resource_action) {
-          const actionKeys = ['ae_namespace', 'ae_class', 'ae_instance', 'ae_id'];
-          actionKeys.forEach((item) => {
+          console.log('selected option = ', this.modalData.automation_type);
+          const resetFields = {
+            automate: ['ae_namespace', 'ae_class', 'ae_instance'],
+            workflows: ['ae_instance', 'configuration_script_id'],
+          };
+          console.log(resetFields);
+          const resetKeys = this.modalData.automation_type === this.treeOptions.automationTypes.automate
+            ? resetFields.automate
+            : resetFields.workflows;
+          resetKeys.forEach((item) => {
             if (Object.keys(this.modalData.resource_action).includes(item)) {
               this.modalData.resource_action =  {
                 ...this.modalData.resource_action,
@@ -46,13 +54,14 @@ class ModalFieldController extends ModalController {
               };
             }
           });
+          console.log('modifled resource_action', this.modalData.resource_action);
         }
       },
 
       /** Function to reset the modalData while changin the Automation Type. */
       onAutomationTypeChange: () => {
         this.treeOptions.automationType = this.modalData.automation_type;
-        this.treeOptions.resetAutomationEntries();
+        // this.treeOptions.resetAutomationEntries();
         console.log(this.modalData);
       },
 
@@ -118,7 +127,6 @@ class ModalFieldController extends ModalController {
         ae_instance: fqname.pop(),
         ae_class: fqname.pop(),
         ae_namespace: fqname.filter(String).join('/'),
-        ae_id: node.key,
       };
     }
   }
@@ -129,9 +137,7 @@ class ModalFieldController extends ModalController {
       elementData.resource_action = {
         ...elementData.resource_action,
         ae_instance: workflow.name,
-        ae_class: 'workflows', // TODO: Not sure what to give here or is this required
-        ae_namespace: 'configuration_script_payload', // TODO: Not sure what to give here or is this required
-        ae_id: workflow.id,
+        configuration_script_id: workflow.id,
       };
     }
   }
