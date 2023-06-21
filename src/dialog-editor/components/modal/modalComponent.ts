@@ -18,6 +18,10 @@ class ModalController {
   public modalOptions: any;
   public elementInfo: any;
   private uibModalInstance;
+  public automationFields: {embedded_automate: string[], embedded_workflow: string[]} = {
+    embedded_automate: ['ae_namespace', 'ae_class', 'ae_instance'],
+    embedded_workflow: ['configuration_script_id'],
+  };
 
   /*@ngInject*/
   constructor(private $uibModal: any,
@@ -26,6 +30,7 @@ class ModalController {
   }
 
   public loadModalData(elem: any) {
+    console.log('222 loadModalData');
     if (elem !== undefined) {
       // clone data from service
       let elements = {
@@ -82,20 +87,25 @@ class ModalController {
     }
   }
 
+  /** Function to remove certain fields based on embedded_automate and embedded_workflow.
+   * 'configuration_script_id' is not needed when embedded_automate is selected.
+   * 'ae_namespace', 'ae_class', 'ae_instance' is not needed when embedded_workflow is selected.
+  */
+  private loadAutomationFields(modalFieldData) {
+    const automationType = modalFieldData.resource_action && modalFieldData.resource_action.configuration_script_id ? 'embedded_workflow' : 'embedded_automate';
+    modalFieldData.automation_type = automationType;
+    return modalFieldData;
+  }
+
   public loadModalFieldData(tab: number, box: number, field: number) {
+    console.log('222 loadModalFieldData', field);
     if (typeof tab !== 'undefined' &&
         typeof box !== 'undefined' &&
         typeof field !== 'undefined') {
       let tabList = this.DialogEditor.getDialogTabs();
       let boxList = tabList[tab];
       let fieldList = boxList.dialog_groups[box];
-      let modalFieldData = fieldList.dialog_fields[field];
-      if (modalFieldData.resource_action && modalFieldData.resource_action.configuration_script_id) {
-        modalFieldData.automation_type = 'embedded_workflows';
-      } else {
-        modalFieldData.automation_type = 'embedded_automate';
-      }
-      return modalFieldData;
+      return this.loadAutomationFields(fieldList.dialog_fields[field]);;
     }
   }
 
@@ -166,6 +176,7 @@ class ModalController {
    * @function saveDialogFieldDetails
    */
   public saveDialogFieldDetails() {
+    console.log('222 save dialog box');
     switch (this.elementInfo.type) {
       case 'tab':
         _.extend(
@@ -185,7 +196,17 @@ class ModalController {
         );
         break;
       case 'field':
+        console.log('before saveDialogFieldDetails', this.modalData);
+        if (this.modalData['automation_type'] === 'embedded_workflow') {
+          delete this.modalData.resource_action['ae_instance'];
+          delete this.modalData.resource_action['ae_namespace'];
+          delete this.modalData.resource_action['ae_class'];
+          delete this.modalData.resource_action['ae_attribute'];
+          delete this.modalData.resource_action['ae_message'];
+        }
+        console.log('222 before saveDialogFieldDetails', this.modalData);
         delete this.modalData['automation_type'];
+        console.log('222 after saveDialogFieldDetails', this.modalData);
         this.DialogEditor.getDialogTabs()[
           this.DialogEditor.activeTab].dialog_groups[
             this.elementInfo.boxId].dialog_fields[

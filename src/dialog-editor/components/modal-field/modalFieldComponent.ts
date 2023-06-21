@@ -31,28 +31,29 @@ class ModalFieldController extends ModalController {
       automationType: null,
       automationTypes: {
         automate: 'embedded_automate',
-        workflows: 'embedded_workflows',
+        workflow: 'embedded_workflow',
       },
 
       /** Function to reset the automation entries when the Automation Type drop down is changed. */
       resetAutomationEntries: () => {
         const resetFields = {
           automate: ['ae_namespace', 'ae_class', 'ae_instance'],
-          workflows: ['configuration_script_id'],
+          workflow: ['ae_instance', 'configuration_script_id'],
         };
 
         if (this.modalData.resource_action) {
-          const entries =  (this.modalData.automation_type === this.treeOptions.automationTypes.automate) ? resetFields.workflows : resetFields.automate;
-          entries.forEach((field) => {
-            if (Object.keys(this.modalData.resource_action).includes(field)) {
+          const resetEntries =  (this.modalData.automation_type === this.treeOptions.automationTypes.automate) ? resetFields.workflow : resetFields.automate;
+          resetEntries.forEach((item) => {
+            if (Object.keys(this.modalData.resource_action).includes(item)) {
+              // delete this.modalData.resource_action[item];
               this.modalData.resource_action = {
                 ...this.modalData.resource_action,
-                [field]: '',
+                [item]: '',
               };
             }
           });
 
-          console.log('modifled resource_action', this.modalData.resource_action);
+          console.log('222 reset modalData.resource_action', this.modalData.resource_action);
         }
       },
 
@@ -60,7 +61,6 @@ class ModalFieldController extends ModalController {
       onAutomationTypeChange: () => {
         this.treeOptions.automationType = this.modalData.automation_type;
         this.treeOptions.resetAutomationEntries();
-        console.log(this.modalData);
       },
 
       /** Function to open the modal box and load the automate tree. */
@@ -80,13 +80,13 @@ class ModalFieldController extends ModalController {
       /** Function to open the modal box and load the workflows list. */
       toggleWorkflows: () => {
         this.treeOptions.show = ! this.treeOptions.show;
-        this.treeOptions.automationType = this.treeOptions.automationTypes.workflows;
+        this.treeOptions.automationType = this.treeOptions.automationTypes.workflow;
 
         if (this.treeOptions.show) {
           this.treeOptions.loadWorkflows().then((data) => {
             this.treeOptions.data = data.resources.filter((item: any) => item.payload);
             const workflow = this.treeOptions.data.find((item) => item.id === this.modalData.resource_action.configuration_script_id);
-            this.treeOptions.selected = workflow ? workflow.name : null;
+            this.treeOptions.selected = workflow ? workflow.name : null; // TODO: check if this line is really needed?
           });
         }
       },
@@ -129,7 +129,7 @@ class ModalFieldController extends ModalController {
     }
   }
 
-  /** Function to extract the values needed for embedded_workflows during onclick event of an item from the list */
+  /** Function to extract the values needed for embedded_workflow during onclick event of an item from the list */
   public onEmbeddedWorkflowsSelect(workflow, elementData) {
     if (elementData.resource_action) {
       elementData.resource_action = {
@@ -146,11 +146,11 @@ class ModalFieldController extends ModalController {
   public treeSelectorSelect(node, elementData) {
     if (this.treeOptions.automationType === this.treeOptions.automationTypes.automate) {
       this.onEmbeddedAutomateSelect(node, elementData);
-    } else if (this.treeOptions.automationType === this.treeOptions.automationTypes.workflows) {
+    } else if (this.treeOptions.automationType === this.treeOptions.automationTypes.workflow) {
       this.onEmbeddedWorkflowsSelect(node, elementData);
     }
     this.treeOptions.show = false;
-    console.log(this.modalData.resource_action);
+    console.log('222 treeSelectorSelect', this.modalData.resource_action);
   }
 
   public modalFieldIsValid() {

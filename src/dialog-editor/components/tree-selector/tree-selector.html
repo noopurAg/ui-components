@@ -4,7 +4,7 @@
       <span ng-if="$ctrl.treeOptions.automationType==$ctrl.treeOptions.automationTypes.automate">
         Select Embededded Automate
       </span>
-      <span ng-if="$ctrl.treeOptions.automationType==$ctrl.treeOptions.automationTypes.workflows">
+      <span ng-if="$ctrl.treeOptions.automationType==$ctrl.treeOptions.automationTypes.workflow">
         Select Embededded Workflow
       </span>
     </div>
@@ -40,7 +40,7 @@
         </div>
       </div>
     </div>
-    <div ng-if="$ctrl.treeOptions.automationType==$ctrl.treeOptions.automationTypes.workflows">
+    <div ng-if="$ctrl.treeOptions.automationType==$ctrl.treeOptions.automationTypes.workflow">
       <div ng-if="$ctrl.treeOptions.data">
         <ul class="nav nav-list workflows_list_wrapper" ng-repeat="workflow in $ctrl.treeOptions.data">
           <li class="workflow_item" ng-click="$ctrl.treeOptions.onSelect(workflow)">

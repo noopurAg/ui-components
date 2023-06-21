@@ -117,7 +117,7 @@
       <div pf-form-group pf-label="Automation Type" class="entry_point_selector_types">
         <select class="form-control" miq-select ng-model="vm.modalData.automation_type" ng-change="vm.treeOptions.onAutomationTypeChange()">
           <option value="{{vm.treeOptions.automationTypes.automate}}" translate>Embedded Automate</option>
-          <option value="{{vm.treeOptions.automationTypes.workflows}}" translate>Embedded Workflows</option>  
+          <option value="{{vm.treeOptions.automationTypes.workflow}}" translate>Embedded Workflows</option>  
         </select>
         <div class="input-group entry_point" ng-if="vm.modalData.automation_type == vm.treeOptions.automationTypes.automate">
           <input type="text" class="form-control" ng-value="vm.showFullyQualifiedName(vm.modalData.resource_action)" disabled>
@@ -125,7 +125,7 @@
             <button class="btn btn-default" ng-click="vm.treeOptions.toggle();"><i class="ff ff-load-balancer"></i></button>
           </span>
         </div>
-        <div class="input-group entry_point" ng-if="vm.modalData.automation_type == vm.treeOptions.automationTypes.workflows">
+        <div class="input-group entry_point" ng-if="vm.modalData.automation_type == vm.treeOptions.automationTypes.workflow">
           <input type="text" class="form-control" ng-value="vm.modalData.resource_action.ae_instance" disabled>
           <span class="input-group-btn">
             <button class="btn btn-default" ng-click="vm.treeOptions.toggleWorkflows();"><i class="ff ff-load-balancer"></i></button>

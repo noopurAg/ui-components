@@ -49,7 +49,7 @@ export default class DialogValidationService {
         field => ({ status: (field.type !== 'DialogFieldTagControl') || tagHasCategory(field),
                     errorMessage: __('Category needs to be set for TagControl field'),
                     local: true }),
-        field => ({ status: ! (field.dynamic && _.isEmpty(field.resource_action.ae_class)),
+        field => ({ status: ! (field.dynamic && !field.resource_action.configuration_script_id && _.isEmpty(field.resource_action.ae_class)),
                     errorMessage: __('Entry Point needs to be set for Dynamic elements'),
                     local: true }),
         field => ({ status: ! ((field.type === 'DialogFieldDropDownList' ||
@@ -107,7 +107,7 @@ export default class DialogValidationService {
   public dialogIsValid(dialogData: any) {
     this.invalid.message = null;
 
-    return _.every(dialogData, dialog =>
+    const validData = _.every(dialogData, dialog =>
       this.validateDialog(dialog) &&
       _.every((<any>dialog).dialog_tabs, tab =>
         this.validateTab(tab) &&
@@ -119,5 +119,6 @@ export default class DialogValidationService {
         )
       )
     );
+    return validData;
   }
 }

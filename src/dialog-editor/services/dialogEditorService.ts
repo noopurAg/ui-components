@@ -122,6 +122,7 @@ export default class DialogEditorService {
     _.forEach(this.data.content[0].dialog_tabs, (tab: any) => {
       _.forEach(tab.dialog_groups, (group: any) => {
         _.forEach(group.dialog_fields, (field: any) => {
+          console.log('222 forEachDialogField field=', field);
           callback(field);
         });
       });
