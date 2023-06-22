@@ -31,29 +31,27 @@ class ModalFieldController extends ModalController {
       automationType: null,
       automationTypes: {
         automate: 'embedded_automate',
-        workflow: 'embedded_workflow',
+        workflow: 'embedded_workflow', // TODO: need to check if this can be resued from classic repo's dialog_editor_controller.js
       },
 
       /** Function to reset the automation entries when the Automation Type drop down is changed. */
       resetAutomationEntries: () => {
-        const resetFields = {
-          automate: ['ae_namespace', 'ae_class', 'ae_instance'],
-          workflow: ['ae_instance', 'configuration_script_id'],
+        const resetFields = { // TODO: need to check if this can be resued from classic repo's dialog_editor_controller.js
+          automate: ['ae_namespace', 'ae_class', 'ae_instance', 'ae_message'],
+          workflow: ['configuration_script_id', 'workflow_name'],
         };
 
         if (this.modalData.resource_action) {
-          const resetEntries =  (this.modalData.automation_type === this.treeOptions.automationTypes.automate) ? resetFields.workflow : resetFields.automate;
+          const isEmbeddedAutomate = this.modalData.automation_type === this.treeOptions.automationTypes.automate;
+          const resetEntries =  isEmbeddedAutomate ? resetFields.workflow : resetFields.automate;
           resetEntries.forEach((item) => {
-            if (Object.keys(this.modalData.resource_action).includes(item)) {
-              // delete this.modalData.resource_action[item];
+            if (this.modalData.resource_action.hasOwnProperty(item)) {
               this.modalData.resource_action = {
                 ...this.modalData.resource_action,
                 [item]: '',
               };
             }
           });
-
-          console.log('222 reset modalData.resource_action', this.modalData.resource_action);
         }
       },
 
@@ -103,7 +101,7 @@ class ModalFieldController extends ModalController {
       return '';
     }
     const actionKeys = ['ae_namespace', 'ae_class', 'ae_instance'];
-    const keysPresent = actionKeys.every((item) => Object.keys(resourceAction).includes(item));
+    const keysPresent = actionKeys.every((item) => resourceAction.hasOwnProperty(item));
 
     if (keysPresent && resourceAction.ae_namespace && resourceAction.ae_class && resourceAction.ae_instance) {
       return `${resourceAction.ae_namespace}/${resourceAction.ae_class}/${resourceAction.ae_instance}`;
@@ -134,10 +132,8 @@ class ModalFieldController extends ModalController {
     if (elementData.resource_action) {
       elementData.resource_action = {
         ...elementData.resource_action,
-        ae_instance: workflow.name,
-        ae_class: 'configuration_script',
-        ae_namespace: 'workflows',
         configuration_script_id: workflow.id,
+        workflow_name: workflow.name,
       };
     }
   }

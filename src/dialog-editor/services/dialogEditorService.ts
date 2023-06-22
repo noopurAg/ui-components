@@ -15,6 +15,7 @@ export default class DialogEditorService {
     this.undefinedAttrsToBoolean();
     // FIXME: Compensation of default values until it is been resolved in the API
     this.forEachDialogField((field: any) => {
+      console.log('222 first time load setData');
       if (field.hasOwnProperty('values') && _.isArray(field.values)) {
         field.values = field.values.filter(value => value[0] && value[1]);
       }
@@ -60,6 +61,7 @@ export default class DialogEditorService {
   public getDynamicFields(nameToExclude) {
     let dynamicFields = [];
     this.forEachDialogField((field) => {
+      console.log('222 dynamicFields on dialog save button click', field);
       if (nameToExclude && (field.name === nameToExclude)) {
         return;
       }
@@ -92,6 +94,7 @@ export default class DialogEditorService {
     let dialogFieldNames = [];
     let newOrdinalNumber = 1;
     this.forEachDialogField((field) => {
+      console.log('222 newFieldName');
       dialogFieldNames.push(field.name);
     });
     while (dialogFieldNames.includes(fieldType + '_' + newOrdinalNumber)) {
@@ -122,7 +125,8 @@ export default class DialogEditorService {
     _.forEach(this.data.content[0].dialog_tabs, (tab: any) => {
       _.forEach(tab.dialog_groups, (group: any) => {
         _.forEach(group.dialog_fields, (field: any) => {
-          console.log('222 forEachDialogField field=', field);
+          console.log('222 forEachDialogField', field);
+          // delete field['automation_type']; // This filed is not required to be passed into backend. 
           callback(field);
         });
       });
