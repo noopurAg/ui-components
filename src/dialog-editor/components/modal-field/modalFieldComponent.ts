@@ -22,6 +22,12 @@ class ModalFieldController extends ModalController {
   public $scope: any;
 
   public $onInit() {
+
+    /** Function to load the selected workflow if  configuration_script_id is available. */
+    if (this.modalData.resource_action && this.modalData.resource_action.configuration_script_id) {
+      this.loadWorkflow(this.modalData.resource_action.configuration_script_id);
+    };
+
     this.treeOptions = {
       ...this.treeOptions,
 
@@ -81,10 +87,10 @@ class ModalFieldController extends ModalController {
         this.treeOptions.automationType = this.treeOptions.automationTypes.workflow;
 
         if (this.treeOptions.show) {
-          this.treeOptions.loadWorkflows().then((data) => {
+          this.treeOptions.loadAvailableWorkflows().then((data) => {
             this.treeOptions.data = data.resources.filter((item: any) => item.payload);
             const workflow = this.treeOptions.data.find((item) => item.id === this.modalData.resource_action.configuration_script_id);
-            this.treeOptions.selected = workflow ? workflow.name : null; // TODO: check if this line is really needed?
+            this.treeOptions.selected = workflow ? workflow.name : null;
           });
         }
       },
@@ -151,5 +157,12 @@ class ModalFieldController extends ModalController {
 
   public modalFieldIsValid() {
     return this.validation.validateField(this.modalData);
+  }
+
+  /** Function to load a selected workflow. */
+  public loadWorkflow(id) {
+    this.treeOptions.loadWorkflow(id).then((workflow) => {
+      this.modalData.resource_action.workflow_name = workflow.name;
+    });
   }
 }
